@@ -58,9 +58,14 @@ def make_section(
     rows = []
     sid = 0
     glom_r_px = 150.0 / pixel_size_um / 2  # a human glomerulus is roughly 150 to 200 um across
-    for _ in range(n_glomeruli):
+    placed: list[tuple[float, float]] = []
+    while len(placed) < n_glomeruli:
         cx = rng.uniform(size_px * 0.25, size_px * 0.75)
         cy = rng.uniform(size_px * 0.3, size_px * 0.7)
+        # glomeruli never touch, so each one is one connected object in the mask
+        if any(np.hypot(cx - px, cy - py) < 2.3 * glom_r_px for px, py in placed):
+            continue
+        placed.append((cx, cy))
         _draw_ellipse(mask, cx, cy, glom_r_px, glom_r_px, CLASS_IDS["glomerulus"])
         _draw_ellipse(mask, cx, cy, glom_r_px * 0.7, glom_r_px * 0.7, CLASS_IDS["tuft"])
         rows.append((sid, "glomerulus", cx, cy, glom_r_px, glom_r_px))

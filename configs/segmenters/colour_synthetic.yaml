@@ -1,0 +1,12 @@
+# nearest colour lookup that reproduces the synthetic section's drawn classes; test only
+type: lvmh.segmenters.colour:NearestColourSegmenter
+params:
+  pixel_size_um: 1.0
+  tile_px: 256
+  colours:
+    background: [245, 245, 245]
+    interstitium: [235, 200, 215]
+    tubule: [200, 120, 160]
+    glomerulus: [150, 70, 130]
+    tuft: [110, 40, 100]
+    artery: [180, 90, 90]
