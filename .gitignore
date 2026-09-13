@@ -1,0 +1,26 @@
+# data lives outside the repo, linked under data/
+/data/
+
+# experiment outputs
+/outputs/
+/mlruns/
+/mlflow.db
+/checkpoints/
+
+# python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+
+# credentials must never enter the repo
+kaggle.json
+
+# os / editor
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,4 @@
+# smoke run on synthetic sections, no data, no gpu
+dataset: synthetic
+out_dir: outputs/synthetic_smoke
+seed: 0

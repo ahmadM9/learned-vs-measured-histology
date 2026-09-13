@@ -1,0 +1,7 @@
+# fake sections with drawn structures and a planted expression signal, for tests and smoke runs
+type: lvmh.synthetic:SyntheticDataset
+params:
+  n_sections: 2
+  seed: 0
+  size_px: 1024
+  pixel_size_um: 1.0
