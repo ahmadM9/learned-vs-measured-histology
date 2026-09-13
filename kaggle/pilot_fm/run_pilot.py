@@ -24,7 +24,7 @@ WORK = Path("/kaggle/working")
 INPUT = Path("/kaggle/input")
 
 # run configs to execute in order; edit before pushing
-CONFIG_NAMES = ["kpmp_random_pilot10.yaml"]
+CONFIG_NAMES = ["kpmp_uni2h_pilot10.yaml"]
 
 
 def run(cmd, **kwargs):
