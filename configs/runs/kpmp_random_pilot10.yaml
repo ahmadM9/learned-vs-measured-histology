@@ -1,0 +1,14 @@
+# random feature baseline on the ten pilot sections, same recipe as the uni2h pilot;
+# also the first end to end run of the kpmp adapter on real sections
+dataset: kpmp_visium
+encoder: random_projection
+subset: configs/subsets/pilot_10.txt
+out_dir: outputs/kpmp_random_pilot10
+seed: 0
+batch_size: 256
+evaluation:
+  n_genes: 50
+  normalize_total: null
+  n_components: 64
+  alpha_numerator: 100.0
+  n_folds: 10
