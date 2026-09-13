@@ -1,0 +1,14 @@
+# how the committed participant lists are drawn from kpmp_manifest.csv
+seed: 20260913
+exclude_multi_section: true
+lists:
+  # stage 0b item 4: three large batch and two small batch images, spread over enrollment
+  segmenter_check_5:
+    large: 3
+    small: 2
+    spread_over: enrollment_category
+  # stage 0b item 6: pilot for the power simulation, large batch only
+  pilot_10:
+    large: 10
+    small: 0
+    spread_over: enrollment_category

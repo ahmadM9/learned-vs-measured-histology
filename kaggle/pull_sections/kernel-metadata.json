@@ -1,0 +1,14 @@
+{
+  "id": "ahmadm10/lvmh-pull-sections",
+  "title": "lvmh-pull-sections",
+  "code_file": "run_pull.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_internet": true,
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

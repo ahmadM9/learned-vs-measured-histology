@@ -1,0 +1,28 @@
+# kpmp open tier visium sections as laid out by kaggle/pull_sections: one directory per
+# participant holding the full resolution tif, the space ranger spatial folder and the h5 matrix
+type: lvmh.datasets.kpmp:KPMPVisium
+params:
+  root: data/kpmp
+  # 10x visium spot diameter, from the 10x Visium Spatial Gene Expression specification
+  spot_diameter_um: 55.0
+  image_glob: "*.tif"
+  spatial_glob: "**/spatial"
+  h5_glob: "**/filtered_feature_bc_matrix.h5"
+# where the files come from; used by scripts/kpmp_manifest.py and kaggle/pull_sections
+repository:
+  # public read-only search endpoint of atlas.kpmp.org/repository, the same one the
+  # website calls from every visitor's browser; the key is embedded in the public page
+  search_url: https://atlas.kpmp.org/spatial-viewer/search/api/as/v1/engines/atlas-repository/search.json
+  search_key: search-vwz67uj2sf8h83h4y8i8j6g3
+  download_url: https://atlas.kpmp.org/api/v1/file/download
+  experimental_strategy: Spatial Transcriptomics
+  access: open
+  page_size: 100
+  # two image batches exist, 1.34 GB and 0.35 GB; anything under this is the small batch
+  small_image_bytes: 800000000
+  file_kinds:
+    image: tif
+    spatial: h5 jpg csv png json
+    matrix: tsv mtx
+    cloupe: cloupe
+    metadata: xlsx

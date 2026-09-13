@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -139,3 +140,46 @@ class SyntheticDataset:
             participant_id=f"synthetic-p{i}",
             **self.section_kwargs,
         ).section
+
+
+def write_kpmp_layout(syn: SyntheticSection, section_dir, spot_diameter_um: float = 55.0):
+    # mirrors what kaggle/pull_sections leaves on disk, so the kpmp adapter is
+    # tested on the exact file layout it will meet
+    import json
+
+    import h5py
+    import tifffile
+
+    section_dir = Path(section_dir)
+    spatial = section_dir / "outs" / "spatial"
+    spatial.mkdir(parents=True)
+    sec = syn.section
+    tifffile.imwrite(section_dir / f"{sec.section_id}.tif", sec.image.array, photometric="rgb")
+
+    scale = {
+        "tissue_hires_scalef": 0.1,
+        "tissue_lowres_scalef": 0.03,
+        "fiducial_diameter_fullres": sec.spot_diameter_px * 1.6,
+        "spot_diameter_fullres": sec.spot_diameter_px,
+    }
+    (spatial / "scalefactors_json.json").write_text(json.dumps(scale))
+    pos = sec.spots.rename(columns={"y_px": "pxl_row_in_fullres", "x_px": "pxl_col_in_fullres"})
+    cols = ["barcode", "in_tissue", "array_row", "array_col"]
+    cols += ["pxl_row_in_fullres", "pxl_col_in_fullres"]
+    pos[cols].to_csv(spatial / "tissue_positions.csv", index=False)
+
+    # filtered matrix holds in-tissue spots only, genes x barcodes, csc like cell ranger
+    keep = sec.spots.in_tissue.values.astype(bool)
+    m = sp.csc_matrix(sec.counts[keep].T)
+    with h5py.File(section_dir / "outs" / "filtered_feature_bc_matrix.h5", "w") as f:
+        g = f.create_group("matrix")
+        g.create_dataset("data", data=m.data.astype(np.int32))
+        g.create_dataset("indices", data=m.indices.astype(np.int64))
+        g.create_dataset("indptr", data=m.indptr.astype(np.int64))
+        g.create_dataset("shape", data=np.array(m.shape, dtype=np.int32))
+        g.create_dataset("barcodes", data=np.array(sec.spots.barcode[keep], dtype="S"))
+        feat = g.create_group("features")
+        feat.create_dataset("name", data=np.array(sec.genes, dtype="S"))
+        ids = [f"ENSG{j:011d}" for j in range(len(sec.genes))]
+        feat.create_dataset("id", data=np.array(ids, dtype="S"))
+    return section_dir
