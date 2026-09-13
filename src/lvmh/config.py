@@ -27,7 +27,10 @@ class RunConfig:
     def build(self, key: str, **overrides):
         if key not in self.components:
             raise KeyError(f"{self.path.name} names no {key!r}; has {sorted(self.components)}")
-        return self.components[key].build(**overrides)
+        # "<key>_overrides" in the run yaml changes constructor params for this run only,
+        # e.g. the data root on a kaggle machine, without touching the component yaml
+        merged = {**(self.raw.get(f"{key}_overrides") or {}), **overrides}
+        return self.components[key].build(**merged)
 
 
 def load_run(path: str | Path, config_root: Path = CONFIG_ROOT) -> RunConfig:

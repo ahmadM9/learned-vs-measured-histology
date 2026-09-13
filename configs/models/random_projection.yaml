@@ -1,0 +1,7 @@
+# random feature baseline and test stand-in; a seeded random projection of the tile pixels
+type: lvmh.models.random_encoder:RandomProjectionEncoder
+params:
+  tile_px: 32
+  pixel_size_um: 1.0
+  dim: 64
+  seed: 0

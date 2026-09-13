@@ -22,9 +22,17 @@ class TiffRegionReader:
         self.path = Path(path)
         self.pixel_size_um = float(pixel_size_um)
         self._tif = tifffile.TiffFile(self.path)
-        self._z = zarr.open(self._tif.aszarr(), mode="r")
-        if isinstance(self._z, zarr.Group):
-            self._z = self._z[0]  # pyramidal tif: level 0 is full resolution
+        # kpmp images are uncompressed and contiguous, so a memmap slices the file
+        # directly; anything else (compressed, tiled, pyramidal) goes through zarr,
+        # which reads whole strips or tiles per region
+        try:
+            self._z = tifffile.memmap(self.path, mode="r")
+            self.backend = "memmap"
+        except ValueError:
+            self._z = zarr.open(self._tif.aszarr(), mode="r")
+            if isinstance(self._z, zarr.Group):
+                self._z = self._z[0]  # pyramidal tif: level 0 is full resolution
+            self.backend = "zarr"
         if self._z.ndim != 3 or self._z.shape[2] < 3:
             raise ValueError(f"{self.path.name}: expected an RGB image, got shape {self._z.shape}")
         self.shape = (int(self._z.shape[0]), int(self._z.shape[1]))

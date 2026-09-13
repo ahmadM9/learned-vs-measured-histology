@@ -1,0 +1,14 @@
+# H-optimus-1, Bioptimus, CC BY-NC-ND 4.0, gated on the hub. model card states 0.5 micron
+# per pixel input and its own normalisation constants
+type: lvmh.models.hf_encoder:TimmHubEncoder
+params:
+  hf_id: bioptimus/H-optimus-1
+  tile_px: 224
+  pixel_size_um: 0.5
+  dim: 1536
+  mean: [0.707223, 0.578729, 0.703617]
+  std: [0.211883, 0.230117, 0.177517]
+  batch_size: 64
+  create_kwargs:
+    init_values: 0.00001
+    dynamic_img_size: false

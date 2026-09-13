@@ -47,3 +47,20 @@ def test_missing_file_names_the_problem(kpmp_root):
     (kpmp_root / "29-10000" / "sec0.tif").unlink()
     with pytest.raises(FileNotFoundError, match="image"):
         KPMPVisium(root=kpmp_root, spot_diameter_um=55.0).load("29-10000")
+
+
+def test_compressed_tif_falls_back_to_zarr(tmp_path):
+    import tifffile
+
+    from lvmh.datasets.kpmp import TiffRegionReader
+
+    syn = make_section(seed=2)
+    path = tmp_path / "c.tif"
+    tifffile.imwrite(path, syn.section.image.array, photometric="rgb", compression="zlib")
+    r = TiffRegionReader(path, 1.0)
+    assert r.backend == "zarr"
+    expected = syn.section.image.read_region(10, 20, 30, 40)
+    assert np.array_equal(r.read_region(10, 20, 30, 40), expected)
+    plain = tmp_path / "p.tif"
+    tifffile.imwrite(plain, syn.section.image.array, photometric="rgb")
+    assert TiffRegionReader(plain, 1.0).backend == "memmap"

@@ -1,0 +1,15 @@
+# smoke run: random projection features on synthetic sections, then the HEST-Bench recipe
+dataset: synthetic
+encoder: random_projection
+out_dir: outputs/synthetic_random_smoke
+seed: 0
+batch_size: 128
+evaluation:
+  # HEST-Bench: 50 most variable genes, StandardScaler then PCA(256), ridge with
+  # alpha = 100 / (n_components * n_genes), no total count normalisation (their
+  # normalize_adata only applies log1p), patient level folds
+  n_genes: 20
+  normalize_total: null
+  n_components: 16
+  alpha_numerator: 100.0
+  n_folds: 2

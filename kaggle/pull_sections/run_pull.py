@@ -27,8 +27,8 @@ REPO_DIR = Path("/tmp/repo")
 WORK = Path("/kaggle/working")
 INPUT = Path("/kaggle/input")
 
-# which committed list under configs/subsets to pull; edit before pushing
-SUBSET_NAME = "segmenter_check_5"
+# which committed lists under configs/subsets to pull (union); edit before pushing
+SUBSET_NAMES = ("segmenter_check_5", "pilot_10")
 # file kinds to fetch; cloupe files are 200 to 700 MB each and never used
 FILE_KINDS = ("image", "spatial", "matrix", "metadata")
 
@@ -98,8 +98,11 @@ def main() -> None:
     dataset_yaml = REPO_DIR / "configs/datasets/kpmp_visium.yaml"
     repo = yaml.safe_load(dataset_yaml.read_text())["repository"]
     manifest = pd.read_csv(REPO_DIR / "configs/subsets/kpmp_manifest.csv")
-    ids = (REPO_DIR / f"configs/subsets/{SUBSET_NAME}.txt").read_text().split()
-    print(f"{SUBSET_NAME}: {len(ids)} participants", flush=True)
+    ids: set[str] = set()
+    for name in SUBSET_NAMES:
+        ids |= set((REPO_DIR / f"configs/subsets/{name}.txt").read_text().split())
+    ids = sorted(ids)
+    print(f"{SUBSET_NAMES}: {len(ids)} participants", flush=True)
 
     summary = []
     for pid in ids:

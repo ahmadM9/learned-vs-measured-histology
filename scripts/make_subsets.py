@@ -44,12 +44,18 @@ def make_lists(manifest: pd.DataFrame, spec: dict) -> dict[str, list[str]]:
     out = {}
     for name, rule in spec["lists"].items():
         ids: list[str] = []
+        if rule.get("include_large_from"):
+            prior = out[rule["include_large_from"]]
+            large = set(pool[pool.image_size_class == "large"].participant_id)
+            ids += [p for p in prior if p in large]
         for size_class in ("large", "small"):
-            n = rule.get(size_class, 0)
-            if n:
-                sub = pool[pool.image_size_class == size_class]
+            n = rule.get(size_class, 0) - sum(
+                1 for p in ids if pool.set_index("participant_id").image_size_class[p] == size_class
+            )
+            if n > 0:
+                sub = pool[(pool.image_size_class == size_class) & ~pool.participant_id.isin(ids)]
                 ids += draw(sub, n, rule["spread_over"], rng)
-        out[name] = ids
+        out[name] = sorted(ids)
     return out
 
 

@@ -7,8 +7,10 @@ lists:
     large: 3
     small: 2
     spread_over: enrollment_category
-  # stage 0b item 6: pilot for the power simulation, large batch only
+  # stage 0b item 6: pilot for the power simulation, large batch only. Starts with the
+  # large sections of segmenter_check_5 so both lists fit one kaggle output (about 20 GB)
   pilot_10:
     large: 10
     small: 0
     spread_over: enrollment_category
+    include_large_from: segmenter_check_5

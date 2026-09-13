@@ -1,0 +1,16 @@
+# stage 0b item 6: what equivalence margin can the full cohort resolve, given the
+# between patient spread of scores seen in the pilot
+pilot_scores: outputs/kpmp_uni2h_pilot10/scores_patients.csv
+# eligible participants in configs/subsets/kpmp_manifest.csv after excluding the
+# one multi-section participant
+n_patients: 208
+# two one-sided tests at this level, equivalent to the 90 percent interval inside the margin
+alpha: 0.05
+power_target: 0.8
+# correlation between the two arms' per patient scores is unknown until both exist;
+# 0 is the worst case, 0.8 is what paired arms on the same spots usually show
+correlation_between_arms: [0.0, 0.5, 0.8]
+true_differences: [0.0, 0.01, 0.02]
+margins: {start: 0.005, stop: 0.10, step: 0.005}
+n_sim: 2000
+seed: 20260913

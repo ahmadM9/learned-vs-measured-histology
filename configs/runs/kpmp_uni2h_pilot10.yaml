@@ -1,0 +1,14 @@
+# stage 0b pilot: UNI2-h spot features on the ten pilot sections, HEST-Bench recipe,
+# leave one patient out so every patient gets its own score for the power simulation
+dataset: kpmp_visium
+encoder: uni2h
+subset: configs/subsets/pilot_10.txt
+out_dir: outputs/kpmp_uni2h_pilot10
+seed: 0
+batch_size: 256
+evaluation:
+  n_genes: 50
+  normalize_total: null
+  n_components: 256
+  alpha_numerator: 100.0
+  n_folds: 10

@@ -1,0 +1,25 @@
+# UNI2-h, Mahmood lab, CC BY-NC-ND 4.0, gated on the hub. create_kwargs copied from the
+# model card. pixel size: trained at 20x, taken as 0.5 micron per pixel
+type: lvmh.models.hf_encoder:TimmHubEncoder
+params:
+  hf_id: MahmoodLab/UNI2-h
+  tile_px: 224
+  pixel_size_um: 0.5
+  dim: 1536
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]
+  batch_size: 64
+  create_kwargs:
+    img_size: 224
+    patch_size: 14
+    depth: 24
+    num_heads: 24
+    init_values: 0.00001
+    embed_dim: 1536
+    mlp_ratio: 5.33334
+    num_classes: 0
+    no_embed_class: true
+    mlp_layer: "timm.layers:SwiGLUPacked"
+    act_layer: "torch.nn:SiLU"
+    reg_tokens: 8
+    dynamic_img_size: true

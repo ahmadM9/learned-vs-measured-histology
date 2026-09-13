@@ -61,3 +61,23 @@ def test_run_config_builds_named_component():
     assert cfg["out_dir"].startswith("outputs/")
     with pytest.raises(KeyError):
         cfg.build("segmenter")
+
+
+def test_run_overrides_change_component_params():
+    cfg = load_run(CONFIG_ROOT / "runs" / "synthetic_smoke.yaml")
+    cfg.raw["dataset_overrides"] = {"n_sections": 5}
+    assert len(cfg.build("dataset").section_ids()) == 5
+    assert len(cfg.build("dataset", n_sections=1).section_ids()) == 1
+
+
+def test_config_root_env_var(tmp_path, monkeypatch):
+    import importlib
+
+    import lvmh.registry as reg
+
+    monkeypatch.setenv("LVMH_CONFIG_ROOT", str(tmp_path))
+    importlib.reload(reg)
+    assert reg.CONFIG_ROOT == tmp_path
+    monkeypatch.delenv("LVMH_CONFIG_ROOT")
+    importlib.reload(reg)
+    assert reg.CONFIG_ROOT.name == "configs"

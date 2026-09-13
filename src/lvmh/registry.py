@@ -1,13 +1,18 @@
 from __future__ import annotations
 
 import importlib
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 import yaml
 
-CONFIG_ROOT = Path(__file__).resolve().parents[2] / "configs"
+# a non-editable install has no configs next to the package, so a kernel or a
+# deployed copy points at a checkout with LVMH_CONFIG_ROOT
+CONFIG_ROOT = Path(
+    os.environ.get("LVMH_CONFIG_ROOT", Path(__file__).resolve().parents[2] / "configs")
+)
 KINDS = ("datasets", "segmenters", "models")
 
 
