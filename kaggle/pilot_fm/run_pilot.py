@@ -11,6 +11,7 @@ configs with out_dir rewritten to /kaggle/working, and prints the fold table.
 """
 
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -56,7 +57,8 @@ def set_hf_token() -> None:
 
 
 def main() -> None:
-    subprocess.run(["nvidia-smi", "--query-gpu=name,memory.total", "--format=csv,noheader"])
+    if shutil.which("nvidia-smi"):  # cpu machines have none
+        subprocess.run(["nvidia-smi", "--query-gpu=name,memory.total", "--format=csv,noheader"])
     run(["git", "clone", "--depth", "1", REPO_URL, REPO_DIR])
     target = f"{REPO_DIR}[{EXTRAS}]" if EXTRAS else str(REPO_DIR)
     run([sys.executable, "-m", "pip", "install", "-q", target])
