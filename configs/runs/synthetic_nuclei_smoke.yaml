@@ -1,0 +1,13 @@
+# smoke run: nuclear morphometry from the threshold detector on synthetic sections with nuclei
+dataset: synthetic
+dataset_overrides:
+  nuclei_per_mm2: 3000
+featurizer: threshold_nuclei_synthetic
+out_dir: outputs/synthetic_nuclei_smoke
+seed: 0
+evaluation:
+  n_genes: 20
+  normalize_total: null
+  n_components: 7
+  alpha_numerator: 100.0
+  n_folds: 2

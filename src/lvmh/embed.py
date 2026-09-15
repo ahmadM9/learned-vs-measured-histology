@@ -1,4 +1,4 @@
-"""Extract one feature vector per spot with a registered encoder.
+"""Extract one feature vector per spot with a registered encoder or featurizer.
 
     python -m lvmh.embed --config configs/runs/synthetic_random_smoke.yaml
 
@@ -40,9 +40,23 @@ def embed_section(section, encoder, batch_size: int) -> tuple[np.ndarray, float]
     return feats, time.time() - t0
 
 
+def features_for(cfg: RunConfig, section, encoder, featurizer):
+    # an encoder embeds spot centred tiles; a featurizer sees the whole section and
+    # returns whatever it measures per spot. A run names exactly one of the two.
+    if encoder is not None:
+        feats, seconds = embed_section(section, encoder, cfg.get("batch_size", 256))
+        return feats, seconds, [f"dim{j}" for j in range(feats.shape[1])]
+    feats, seconds = featurizer.featurize(section)
+    return feats, seconds, list(featurizer.names)
+
+
 def run(cfg: RunConfig) -> list[Path]:
     dataset = cfg.build("dataset")
-    encoder = cfg.build("encoder")
+    has = [k for k in ("encoder", "featurizer") if k in cfg.components]
+    if len(has) != 1:
+        raise ValueError(f"{cfg.path.name}: name exactly one of encoder or featurizer, got {has}")
+    encoder = cfg.build("encoder") if "encoder" in cfg.components else None
+    featurizer = cfg.build("featurizer") if "featurizer" in cfg.components else None
     out = Path(cfg["out_dir"]) / "features"
     out.mkdir(parents=True, exist_ok=True)
     written = []
@@ -53,15 +67,16 @@ def run(cfg: RunConfig) -> list[Path]:
             written.append(path)
             continue
         section = dataset.load(sid)
-        feats, seconds = embed_section(section, encoder, cfg.get("batch_size", 256))
+        feats, seconds, names = features_for(cfg, section, encoder, featurizer)
         np.savez(
             path,
             features=feats,
+            feature_names=np.array(names, dtype=str),
             barcodes=np.array(section.spots.barcode, dtype=str),
             section_id=sid,
             participant_id=section.participant_id,
             seconds=seconds,
-            encoder=cfg["encoder"],
+            source=cfg.get("encoder") or cfg.get("featurizer"),
         )
         print(f"{sid}: {len(feats)} spots in {seconds:.1f} s", flush=True)
         written.append(path)

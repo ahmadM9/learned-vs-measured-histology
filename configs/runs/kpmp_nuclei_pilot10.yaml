@@ -1,0 +1,12 @@
+# stage 0b: nuclear morphometry (cellpose) on the ten pilot sections, same recipe as uni2h
+dataset: kpmp_visium
+featurizer: cellpose_nuclei
+subset: configs/subsets/pilot_10.txt
+out_dir: outputs/kpmp_nuclei_pilot10
+seed: 0
+evaluation:
+  n_genes: 50
+  normalize_total: null
+  n_components: 7
+  alpha_numerator: 100.0
+  n_folds: 10

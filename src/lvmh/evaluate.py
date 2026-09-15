@@ -135,7 +135,8 @@ def log_mlflow(cfg: RunConfig, tables: dict[str, pd.DataFrame], genes: list[str]
     mlflow.set_experiment(cfg.get("experiment", cfg.path.stem))
     with mlflow.start_run(run_name=cfg.path.stem):
         mlflow.log_params({k: v for k, v in cfg["evaluation"].items()})
-        mlflow.log_params({k: cfg[k] for k in ("dataset", "encoder") if k in cfg.raw})
+        keys = ("dataset", "encoder", "featurizer", "segmenter")
+        mlflow.log_params({k: cfg[k] for k in keys if k in cfg.raw})
         mlflow.log_param("n_genes_selected", len(genes))
         for row in tables["folds"].itertuples():
             mlflow.log_metric("pearson_mean", row.pearson_mean, step=row.fold)

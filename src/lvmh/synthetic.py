@@ -46,6 +46,8 @@ def make_section(
     n_genes: int = 30,
     section_id: str = "synthetic-0",
     participant_id: str = "synthetic",
+    nuclei_per_mm2: float = 0.0,
+    nucleus_diameter_um: float = 6.0,
 ) -> SyntheticSection:
     rng = np.random.default_rng(seed)
     mask = np.full((size_px, size_px), CLASS_IDS["background"], dtype=np.uint8)
@@ -86,6 +88,26 @@ def make_section(
     for name, value in CLASS_IDS.items():
         image[mask == value] = COLOURS[name]
     image = np.clip(image.astype(int) + rng.integers(-6, 7, image.shape), 0, 255).astype(np.uint8)
+
+    # optional dark nuclei, three times denser inside glomeruli so a nuclear density
+    # feature carries a signal; they are drawn on the image only, not in the mask
+    if nuclei_per_mm2 > 0:
+        area_mm2 = (size_px * pixel_size_um / 1000.0) ** 2
+        r_px = nucleus_diameter_um / pixel_size_um / 2
+        n = int(nuclei_per_mm2 * area_mm2 * 3)
+        for _ in range(n):
+            cx, cy = rng.uniform(r_px, size_px - r_px, size=2)
+            c = mask[int(cy), int(cx)]
+            if c == CLASS_IDS["background"]:
+                continue
+            if c not in (CLASS_IDS["glomerulus"], CLASS_IDS["tuft"]) and rng.random() > 1 / 3:
+                continue
+            r = int(np.ceil(r_px))
+            x0, y0 = int(cx) - r, int(cy) - r
+            y, x = np.ogrid[y0 : y0 + 2 * r + 1, x0 : x0 + 2 * r + 1]
+            inside = (x - cx) ** 2 + (y - cy) ** 2 <= r_px * r_px
+            window = image[y0 : y0 + 2 * r + 1, x0 : x0 + 2 * r + 1]
+            window[inside[: window.shape[0], : window.shape[1]]] = (40, 20, 60)
 
     pitch = spot_pitch_um / pixel_size_um
     diameter_px = spot_diameter_um / pixel_size_um

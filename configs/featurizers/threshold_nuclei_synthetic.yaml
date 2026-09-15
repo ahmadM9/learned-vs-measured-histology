@@ -1,0 +1,11 @@
+# same features from a dark blob detector; synthetic sections and tests only
+type: lvmh.nuclei:NucleiMorphometry
+params:
+  nucleus_diameter_um: 6.0
+  window_factor: 1.3
+  batch_size: 64
+  model:
+    type: lvmh.nuclei:ThresholdNuclei
+    params:
+      threshold: 60
+      min_area_px: 4

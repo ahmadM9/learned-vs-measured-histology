@@ -1,0 +1,14 @@
+# nuclear morphometry per spot from cellpose-sam on the h&e; the stain-proof measured arm.
+# nucleus diameter: kidney tubular epithelial nuclei are about 6 to 8 micron across
+type: lvmh.nuclei:NucleiMorphometry
+params:
+  nucleus_diameter_um: 7.0
+  window_factor: 1.3
+  batch_size: 32
+  model:
+    type: lvmh.nuclei:CellposeNuclei
+    params:
+      pretrained_model: cpsam_v2
+      batch_size: 32
+      flow_threshold: 0.4
+      cellprob_threshold: 0.0

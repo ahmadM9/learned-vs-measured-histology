@@ -13,7 +13,7 @@ import yaml
 CONFIG_ROOT = Path(
     os.environ.get("LVMH_CONFIG_ROOT", Path(__file__).resolve().parents[2] / "configs")
 )
-KINDS = ("datasets", "segmenters", "models")
+KINDS = ("datasets", "segmenters", "models", "featurizers")
 
 
 @dataclass

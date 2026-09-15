@@ -24,7 +24,9 @@ WORK = Path("/kaggle/working")
 INPUT = Path("/kaggle/input")
 
 # run configs to execute in order; edit before pushing
-CONFIG_NAMES = ["kpmp_uni2h_pilot10.yaml"]
+CONFIG_NAMES = ["kpmp_nuclei_pilot10.yaml"]
+# optional extras from pyproject to install, e.g. "nuclei" for cellpose
+EXTRAS = "nuclei"
 
 
 def run(cmd, **kwargs):
@@ -56,7 +58,8 @@ def set_hf_token() -> None:
 def main() -> None:
     subprocess.run(["nvidia-smi", "--query-gpu=name,memory.total", "--format=csv,noheader"])
     run(["git", "clone", "--depth", "1", REPO_URL, REPO_DIR])
-    run([sys.executable, "-m", "pip", "install", "-q", REPO_DIR])
+    target = f"{REPO_DIR}[{EXTRAS}]" if EXTRAS else str(REPO_DIR)
+    run([sys.executable, "-m", "pip", "install", "-q", target])
     set_hf_token()
     data_root = find_data_root()
     print(f"data root: {data_root}", flush=True)

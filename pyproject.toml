@@ -13,6 +13,7 @@ dependencies = [
     "scipy>=1.11",
     "scikit-learn>=1.4",
     "pillow>=10.0",
+    "scikit-image>=0.22",
     "tifffile>=2024.2",
     "zarr>=3.0",
     "h5py>=3.10",
@@ -25,6 +26,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "ruff>=0.6"]
+# heavy optional backends, installed only where they run, never in ci
+nuclei = ["cellpose>=4.0"]
 
 [build-system]
 requires = ["setuptools>=68"]

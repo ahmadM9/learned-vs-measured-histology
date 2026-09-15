@@ -9,7 +9,12 @@ import yaml
 from lvmh.registry import CONFIG_ROOT, KINDS, ComponentSpec, Registry
 
 # run yaml keys that name a component, mapped to the registry kind they live in
-COMPONENT_KEYS = {"dataset": "datasets", "segmenter": "segmenters", "encoder": "models"}
+COMPONENT_KEYS = {
+    "dataset": "datasets",
+    "segmenter": "segmenters",
+    "encoder": "models",
+    "featurizer": "featurizers",
+}
 
 
 @dataclass
