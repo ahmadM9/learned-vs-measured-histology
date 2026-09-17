@@ -22,3 +22,9 @@ libraries document it, but the error only appears at first region read.
 Space Ranger 1.x tree under `nfs/corenfs/.../outs` with the header-less
 `tissue_positions_list.csv`. Found by unpacking five bundles on Kaggle. Handled
 by glob and by supporting both positions file formats. Worth telling KPMP.
+
+**2026-09-15, Cellpose-SAM on a Kaggle CPU kernel: 380 seconds per 224 px crop.**
+Tried the nuclei pilot on CPU to spare the GPU quota. The first section, 78
+spots, took 8.3 hours before the run was cancelled. On the laptop the model does
+not even load within 8 GB. GPU only for this arm; on a T4 a crop is well under a
+second. Not a bug, but the cellpose docs give no CPU timing for cpsam.
